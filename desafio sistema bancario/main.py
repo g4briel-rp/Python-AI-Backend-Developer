@@ -1,10 +1,6 @@
 import os
 
 def deposito(valor_deposito, saldo, extrato):
-    """
-    Função que recebe um valor e retorna o valor depositado.
-    """
-
     if valor_deposito > 0:
         saldo += valor_deposito
         extrato += f"Depósito de R$ {valor_deposito:.2f} realizado.\n"
@@ -14,10 +10,6 @@ def deposito(valor_deposito, saldo, extrato):
     return saldo, extrato
 
 def saque(valor_saque, saldo, numero_saques, LIMITE_SAQUES, extrato):
-    """
-    Função que recebe um valor e retorna o valor sacado.
-    """
-
     if numero_saques < LIMITE_SAQUES:
         if valor_saque <= 500.0:
             if saldo > valor_saque:
@@ -34,10 +26,6 @@ def saque(valor_saque, saldo, numero_saques, LIMITE_SAQUES, extrato):
     return saldo, numero_saques, extrato
 
 def mostrar_extrato(saldo, extrato):
-    """
-    Função que mostra o saldo e o extrato da conta.
-    """
-
     print("EXTRATO".center(20, "-"))
     if len(extrato) > 0:
         print(extrato)
