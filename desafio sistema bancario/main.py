@@ -33,7 +33,7 @@ if __name__ == "__main__":
             valor_saque = float(input("Digite o valor para saque: "))
             if numero_saques < LIMITE_SAQUES:
                 if valor_saque <= 500.0:
-                    if saldo > valor_saque:
+                    if saldo >= valor_saque:
                         saldo -= valor_saque
                         numero_saques += 1
                         extrato += f"Saque de R$ {valor_saque:.2f} realizado.\n"
