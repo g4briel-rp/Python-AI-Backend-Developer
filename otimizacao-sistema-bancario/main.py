@@ -144,7 +144,7 @@ def saque(*, contas, usuarios):
     else:
         print("Você atingiu o limite de saques diários. Operação inválida!")
 
-def extrato(contas, *, usuarios):
+def extrato(contas, /, *, usuarios):
     if len(contas) == 0:
         print("Não há contas cadastradas para realizar a operação. Por favor efetue a criação de uma conta. Operação inválida!")
         return
