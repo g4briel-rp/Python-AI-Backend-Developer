@@ -1,9 +1,5 @@
 import os
 
-def add_user1(usuarios):
-    usuario = dict(nome="Gabriel Ribeiro Passos", data_de_nascimento="23071999", cpf="13407719698", endereco="av guido marliere, 478 - haidee - cataguases/MG")
-    usuarios["13407719698"] = usuario
-
 def ver_menu():
     menu = """
     BEM VINDO AO BANCO PYTHON DO BRASIL
@@ -222,10 +218,6 @@ def listar_contas_usuario(contas, usuarios, cpf):
 
 if __name__ == "__main__":
     usuarios = dict()
-
-    # remover depois
-    add_user1(usuarios)
-    
     contas = []
 
     while True:
