@@ -70,6 +70,19 @@ def verifica_contas(contas, cpf):
 
     return True
 
+def verifica_cpf(usuarios, cpf):
+    if cpf not in usuarios:
+        return False
+    
+    return True
+
+def verificar_existencia_conta(contas, numero_conta_selecionada, cpf):
+    for conta in contas:
+        if conta["usuario"] == cpf and conta["numero_conta"] == numero_conta_selecionada:
+            return conta
+        
+    return None
+
 def deposito(contas, usuarios, /):
     if len(contas) == 0:
         print("Não há contas cadastradas para realizar a operação. Por favor efetue a criação de uma conta. Operação inválida!")
@@ -77,18 +90,14 @@ def deposito(contas, usuarios, /):
 
     cpf = input("Digite o CPF do usuário, somente os números: ")
 
-    if cpf not in usuarios:
+    if not verifica_cpf(usuarios, cpf):
         print("Usuário não encontrado. Operação inválida!")
         return
     
     listar_contas_usuario(contas, usuarios, cpf)
     numero_conta_selecionada = int(input("Digite o número da conta que deseja realizar o depósito: "))
 
-    conta_selecionada = None
-    for conta in contas:
-        if conta["usuario"] == cpf and conta["numero_conta"] == numero_conta_selecionada:
-            conta_selecionada = conta
-            break
+    conta_selecionada = verificar_existencia_conta(contas, numero_conta_selecionada, cpf)
 
     if conta_selecionada is None:
         print("Conta não encontrada. Operação inválida!")
@@ -111,18 +120,14 @@ def saque(*, contas, usuarios):
 
     cpf = input("Digite o CPF do usuário, somente os números: ")
 
-    if cpf not in usuarios:
+    if not verifica_cpf(usuarios, cpf):
         print("Usuário não encontrado. Operação inválida!")
         return
     
     listar_contas_usuario(contas, usuarios, cpf)
     numero_conta_selecionada = int(input("Digite o número da conta que deseja realizar o saque: "))
     
-    conta_selecionada = None
-    for conta in contas:
-        if conta["usuario"] == cpf and conta["numero_conta"] == numero_conta_selecionada:
-            conta_selecionada = conta
-            break
+    conta_selecionada = verificar_existencia_conta(contas, numero_conta_selecionada, cpf)
 
     if conta_selecionada is None:
         print("Conta não encontrada. Operação inválida!")
@@ -150,24 +155,20 @@ def extrato(contas, *, usuarios):
     
     cpf = input("Digite o CPF do usuário, somente os números: ")
 
-    if cpf not in usuarios:
+    if not verifica_cpf(usuarios, cpf):
         print("Usuário não encontrado. Operação inválida!")
         return
     
     listar_contas_usuario(contas, usuarios, cpf)
     numero_conta_selecionada = int(input("Digite o número da conta que deseja visualizar o extrato: "))
     
-    conta_selecionada = None
-    for conta in contas:
-        if conta["usuario"] == cpf and conta["numero_conta"] == numero_conta_selecionada:
-            conta_selecionada = conta
-            break
+    conta_selecionada = verificar_existencia_conta(contas, numero_conta_selecionada, cpf)
 
     if conta_selecionada is None:
         print("Conta não encontrada. Operação inválida!")
         return
     
-    print(f"EXTRATO DA CONTA {numero_conta_selecionada} DO USUÁRIO {cpf}".center(20, "-"))
+    print(f"\nEXTRATO DA CONTA {numero_conta_selecionada} DO USUÁRIO {cpf}".center(20, "-"))
     print(f"Não há movimentações cadastradas para esta conta." if not conta_selecionada["extrato"] else conta_selecionada["extrato"])
 
 def criar_usuario(usuarios):
@@ -175,7 +176,7 @@ def criar_usuario(usuarios):
     data_de_nascimento = input(f"Digite a data de nascimento do usuário, somente os números: ")
     cpf = input(f"Digite o CPF do usuário, somente os números: ")
 
-    if cpf in usuarios:
+    if verifica_cpf(usuarios, cpf):
         print("CPF já cadastrado. Operação inválida!")
         return
 
@@ -186,7 +187,7 @@ def criar_usuario(usuarios):
     print("Usuário cadastrado com sucesso!")
 
 def listar_usuarios(usuarios):
-    print(f"LISTA DE USUÁRIOS".center(20, "-"))
+    print(f"\nLISTA DE USUÁRIOS".center(20, "-"))
     print(f"Não há usuários cadastrados." if len(usuarios) == 0 else informacoes_usuario(usuarios))
 
 def criar_conta(contas, usuarios):
@@ -208,15 +209,15 @@ def criar_conta(contas, usuarios):
     print("Conta criada com sucesso!")
 
 def listar_todas_contas(contas):
-    print(f"LISTA DE CONTAS".center(20, "-"))
+    print(f"\nLISTA DE CONTAS".center(20, "-"))
     print(f"Não há contas cadastradas." if len(contas) == 0 else informacoes_contas(contas))
 
 def listar_contas_usuario(contas, usuarios, cpf):
-    if cpf not in usuarios:
+    if not verifica_cpf(usuarios, cpf):
         print("Usuário não encontrado. Operação inválida!")
         return
 
-    print(f"LISTA DE CONTAS DO USUÁRIO {cpf}".center(20, "-"))
+    print(f"\nLISTA DE CONTAS DO USUÁRIO {cpf}".center(20, "-"))
     print(f"Não há contas cadastradas para este usuário." if verifica_contas(contas, cpf) else informacoes_contas_usuario(contas, cpf))
 
 if __name__ == "__main__":
