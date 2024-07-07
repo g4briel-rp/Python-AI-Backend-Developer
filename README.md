@@ -67,3 +67,7 @@ Fomos contratados por um grande banco para desenvolver o seu novo sistema. Esse 
 - ### Desafio Extra
 
   Após concluir a modelagem das classes e a criação dos métodos, atualizar os métodos que tratam as opções do menu, para funcionarem com as classes modeladas.
+
+## 4. Desafio da aula de "Decoradores, Iteradores e Geradores em Python"
+
+## 5. Desafio da aula de "Lidando com Data, Hora e Fuso Horário no Python"
