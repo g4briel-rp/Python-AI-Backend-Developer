@@ -1,13 +1,16 @@
 from datetime import datetime, timezone
 from uuid import uuid4
 from fastapi import APIRouter, Body, HTTPException, status
+from fastapi_pagination import Page, paginate
 from pydantic import UUID4
 from sqlalchemy.future import select
 from workout_api.centro_treinamento.models import CentroTreinamentoModel
 from workout_api.categorias.models import CategoriaModel
-from workout_api.atleta.schema import AtletaIn, AtletaOut, AtletaUpdate
+from workout_api.atleta.schema import AtletaIn, AtletaOut, AtletaOutCustom, AtletaUpdate
 from workout_api.atleta.models import AtletaModel
 from workout_api.contrib.dependencies import DatabaseDependency
+from typing import Optional
+from fastapi import Query
 
 atleta_router = APIRouter()
 
@@ -36,11 +39,28 @@ async def post(db_session: DatabaseDependency, atleta_in: AtletaIn = Body(...)):
         db_session.add(atleta_model)
         await db_session.commit()
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Erro ao criar atleta.")
+        raise HTTPException(status_code=status.HTTP_303_SEE_OTHER, detail=f"Já existe um atleta com o CPF {atleta_in.cpf}.")
 
     return atleta_out
 
-@atleta_router.get(path="/", summary="Retorna todos os atletas", status_code=status.HTTP_200_OK, response_model=list[AtletaOut])
+@atleta_router.get(path="/", summary="Retorna todos os atletas", status_code=status.HTTP_200_OK, response_model=Page[AtletaOutCustom])
+
+async def query(db_session: DatabaseDependency, nome: Optional[str] = Query(None, description="Filtrar por nome do atleta"), cpf: Optional[str] = Query(None, description="Filtrar por CPF do atleta")
+) -> list[AtletaOutCustom]:
+    query = select(AtletaModel)
+    
+    if nome:
+        query = query.filter(AtletaModel.nome.ilike(f"%{nome}%"))
+    
+    if cpf:
+        query = query.filter(AtletaModel.cpf == cpf)
+
+    atletas: list[AtletaModel] = (await db_session.execute(query)).scalars().all()
+
+    if not atletas:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Nenhum atleta encontrado.")
+    
+    return paginate([AtletaOutCustom.model_validate(atleta) for atleta in atletas])
 
 async def query(db_session: DatabaseDependency) -> list[AtletaOut]:
     atletas: list[AtletaModel] = (await db_session.execute(select(AtletaModel))).scalars().all()
